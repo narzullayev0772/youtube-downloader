@@ -10,7 +10,7 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });
 var URL;
-app.post("/", (req, res) => {
+app.post("/search", (req, res) => {
   URL = req.body.url;
   if (ytdl.validateURL(URL)) {
   ytdl
