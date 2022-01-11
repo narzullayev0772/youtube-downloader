@@ -22,7 +22,7 @@ let time = new Date();
 
 app.get("/down", (req, res) => {
   if (ytdl.validateURL(URL)) {
-    res.header(`Content-Disposition", 'attachment; filename="video_${time.getFullYear()}${time.getDay()}${time.getHours()}${Math.floor(Math.random()*1000)}.mp4"`);
+    res.header(`Content-Disposition", 'attachment; filename="video_${time.getFullYear()}${time.getDay()}${time.getHours()}${time.getMinutes()}${time.getSeconds()}${time.getMilliseconds()}.mp4"`);
     ytdl(URL, {
       format: "mp4",
     }).pipe(res);
