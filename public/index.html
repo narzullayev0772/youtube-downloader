@@ -49,36 +49,40 @@
         margin: 2%;
         cursor: no-drop;
       }
-      .result{
-          display: flex;
-          align-items: center;
-          flex-direction: column;
+      .result {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
       }
-      .name{
-     width: 80%;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    cursor: pointer;
-    text-align: center;
-    padding: 20px;
-}
-.name:hover{
-    width: 70%;
-    height: auto;
-    white-space: pre-wrap;
-    text-overflow: initial;
-    overflow: unset;
-}
+      .name {
+        width: 80%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        cursor: pointer;
+        text-align: center;
+        padding: 20px;
+      }
+      .name:hover {
+        width: 70%;
+        height: auto;
+        white-space: pre-wrap;
+        text-overflow: initial;
+        overflow: unset;
+      }
     </style>
   </head>
   <body>
     <h2>Youtube Downloader ⤵️</h2>
     <div class="result">
-        <p class="name"></p>
+      <p class="name"></p>
     </div>
     <div class="input-wrap">
-      <input type="text" placeholder="Paste Youtube URL and click ENTER" class="input" />
+      <input
+        type="text"
+        placeholder="Paste Youtube URL and click ENTER"
+        class="input"
+      />
       <span class="search">Download</span>
     </div>
   </body>
@@ -94,25 +98,26 @@
     });
 
     function search(url) {
-      fetch("/search", {
+      fetch("/", {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body:JSON.stringify({url:url})
+        body: JSON.stringify({ url: url }),
       })
-      .then(res=>res.json())
-      .then(function(result){
-              let image = document.createElement("img")
-              image.setAttribute("src",result.photo)
-              image.style.width="250px"
-              document.getElementsByClassName("result")[0].append(image);
-              document.getElementsByClassName('name')[0].innerHTML = result.name
-              document.getElementsByClassName("search")[0].addEventListener("click",download)
-              document.getElementsByClassName("search")[0].style.cursor = "pointer"
-        }
-      )
+        .then((res) => res.json())
+        .then(function (result) {
+          let image = document.createElement("img");
+          image.setAttribute("src", result.photo);
+          image.style.width = "250px";
+          document.getElementsByClassName("result")[0].append(image);
+          document.getElementsByClassName("name")[0].innerHTML = result.name;
+          document
+            .getElementsByClassName("search")[0]
+            .addEventListener("click", download);
+          document.getElementsByClassName("search")[0].style.cursor = "pointer";
+        });
     }
   </script>
 </html>

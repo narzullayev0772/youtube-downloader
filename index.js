@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+
 const ytdl = require("ytdl-core");
 const cors = require("cors");
 app.use(cors());
@@ -10,7 +11,7 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });
 var URL;
-app.post("/search", (req, res) => {
+app.post("/", (req, res) => {
   URL = req.body.url;
   if (ytdl.validateURL(URL)) {
   ytdl
@@ -26,7 +27,7 @@ app.post("/search", (req, res) => {
 
 app.get("/down", (req, res) => {
   if (ytdl.validateURL(URL)) {
-    res.header(`Content-Disposition", 'attachment; filename="video.mp4"`);
+    res.header('Content-Disposition', 'attachment; filename="video'+Date.now()+'.mp4"');
     ytdl(URL, {
       format: "mp4",
     }).pipe(res);
