@@ -35,6 +35,4 @@ app.get("/down", (req, res) => {
   }
 });
 const PORT = process.env.PORT || 8080
-app.listen(PORT, () => {
-  console.log("http://localhost:8080/");
-});
+app.listen(PORT);
