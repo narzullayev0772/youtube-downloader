@@ -7,7 +7,7 @@ app.use(express.static(__dirname + "public"));
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+  res.sendFile(__dirname + "/public/index.html");
 });
 var URL;
 app.post("/", (req, res) => {
