@@ -20,7 +20,7 @@ app.post("/", (req, res) => {
 
 app.get("/down", (req, res) => {
   if (ytdl.validateURL(URL)) {
-    res.header("Content-Disposition", 'attachment; filename="video.mp4"');
+    res.header(`Content-Disposition", 'attachment; filename="${ytdl.getInfo(URL).then(result=>result.videoDetails.title)}"`);
     ytdl(URL, {
       format: "mp4",
     }).pipe(res);
