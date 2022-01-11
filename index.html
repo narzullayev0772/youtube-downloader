@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Youtube Downloader</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: sans-serif;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100%;
+        background-color: #0088cc;
+        color: #fff;
+      }
+      .input {
+        padding: 1.5% 5%;
+        border-radius: 30px;
+        outline: none;
+        border: 1px solid #ddd;
+        box-shadow: 1px 1px 5px #000;
+        width: 70%;
+        font-size: 1.1rem;
+        position: relative;
+      }
+      .input-wrap {
+        margin: 10% 0 0;
+        width: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .search {
+        color: #fff;
+        padding: 10px;
+        background-color: blueviolet;
+        border-radius: 5px;
+        margin: 2%;
+        cursor: no-drop;
+      }
+      .result{
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+      }
+      .name{
+     width: 80%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    text-align: center;
+    padding: 20px;
+}
+.name:hover{
+    width: 70%;
+    height: auto;
+    white-space: pre-wrap;
+    text-overflow: initial;
+    overflow: unset;
+}
+    </style>
+  </head>
+  <body>
+    <h2>Youtube Downloader ⤵️</h2>
+    <div class="result">
+        <p class="name"></p>
+    </div>
+    <div class="input-wrap">
+      <input type="text" placeholder="Paste Youtube URL and click ENTER" class="input" />
+      <span class="search">Download</span>
+    </div>
+  </body>
+  <script>
+    function download() {
+      window.location.href = "/down";
+    }
+    let input = document.getElementsByClassName("input")[0];
+
+    input.addEventListener("change", (e) => {
+      let url = e.target.value;
+      search(url);
+    });
+
+    function search(url) {
+      fetch("http://localhost:8080", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body:JSON.stringify({url:url})
+      })
+      .then(res=>res.json())
+      .then(function(result){
+              let image = document.createElement("img")
+              image.setAttribute("src",result.photo)
+              image.style.width="250px"
+              document.getElementsByClassName("result")[0].append(image);
+              document.getElementsByClassName('name')[0].innerHTML = result.name
+              document.getElementsByClassName("search")[0].addEventListener("click",download)
+              document.getElementsByClassName("search")[0].style.cursor = "pointer"
+        }
+      )
+    }
+  </script>
+</html>
