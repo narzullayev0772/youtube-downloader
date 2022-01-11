@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Youtube Downloader</title>
+    <link rel="icon" type="image/png" href="icon.jpg" />
     <style>
       * {
         margin: 0;
@@ -98,7 +99,7 @@
     });
 
     function search(url) {
-      fetch("https://yutubedownloader.herokuapp.com/", {
+      fetch("/", {
         method: "POST",
         headers: {
           Accept: "application/json",
