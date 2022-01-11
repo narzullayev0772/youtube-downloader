@@ -4,7 +4,7 @@ const app = express();
 const ytdl = require("ytdl-core");
 const cors = require("cors");
 app.use(cors());
-app.use(express.static(__dirname + "public"));
+app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -17,7 +17,9 @@ app.post("/", (req, res) => {
   ytdl
     .getInfo(URL)
     .then((result) => res.json({ name: result.videoDetails.title,
-    photo:result.videoDetails.thumbnails[0].url }));
+    photo:result.videoDetails.thumbnails[0].url })).catch(()=>{
+      res.json({name:"Error time"})
+    })
   }
   else{
     res.json({ name: "hech narsa topilmadi",
