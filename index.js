@@ -12,10 +12,16 @@ app.get("/", (req, res) => {
 var URL;
 app.post("/", (req, res) => {
   URL = req.body.url;
+  if (ytdl.validateURL(URL)) {
   ytdl
     .getInfo(URL)
     .then((result) => res.json({ name: result.videoDetails.title,
     photo:result.videoDetails.thumbnails[0].url }));
+  }
+  else{
+    res.json({ name: "hech narsa topilmadi",
+      photo:null })
+  }
 });
 
 app.get("/down", (req, res) => {
