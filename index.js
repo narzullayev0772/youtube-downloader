@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
-
+const urlLib = require("url");
+const https = require("https");
 const ytdl = require("ytdl-core");
 const cors = require("cors");
 app.use(cors());
@@ -39,14 +40,25 @@ app.get("/down", (req, res) => {
 });
 app.get("/bot", (req, res) => {
   URL = req.query.url;
+  var size;
   if (ytdl.validateURL(URL)) {
-    res.header(
-      "Content-Disposition",
-      'attachment; filename="video' + Date.now() + '.mp4"'
-    );
-    ytdl(URL, {
-      format: "mp4",
-    }).pipe(res);
+    const stream = ytdl(URL, { quality: "highest" });
+    ytdl
+      .getInfo(URL)
+      .then((result) => {
+        size = result.player_response.videoDetails.lengthSeconds;
+        console.log(size);
+      })
+      .then(() => {
+        res.set({
+          "Content-Length": size * 1024 * 1024,
+          "Content-Disposition":
+            'attachment; filename="video' + Date.now() + '.mp4"',
+        });
+      })
+      .then(() => {
+        stream.pipe(res);
+      });
   } else {
     res.json({ message: "Link Mavjud Emas" });
   }
