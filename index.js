@@ -38,20 +38,18 @@ app.get("/down", (req, res) => {
     res.json({ message: "Link Mavjud Emas" });
   }
 });
+
 app.get("/bot", (req, res) => {
   URL = req.query.url;
   var size;
   if (ytdl.validateURL(URL)) {
     const stream = ytdl(URL, { quality: "highest" });
     ytdl
-      .getInfo(URL)
-      .then((result) => {
-        size = result.player_response.videoDetails.lengthSeconds;
-        console.log(size);
-      })
+      .getBasicInfo(URL)
+      .then((res) => (size = res.formats.map((e) => e.contentLength)[0]))
       .then(() => {
         res.set({
-          "Content-Length": size * 1024 * 1024,
+          "Content-Length": size,
           "Content-Disposition":
             'attachment; filename="video' + Date.now() + '.mp4"',
         });
@@ -63,6 +61,7 @@ app.get("/bot", (req, res) => {
     res.json({ message: "Link Mavjud Emas" });
   }
 });
+
 
 const PORT = process.env.PORT || 8080
 app.listen(PORT);
