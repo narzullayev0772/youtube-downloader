@@ -37,5 +37,20 @@ app.get("/down", (req, res) => {
     res.json({ message: "Link Mavjud Emas" });
   }
 });
+app.get("/bot", (req, res) => {
+  URL = req.query.url;
+  if (ytdl.validateURL(URL)) {
+    res.header(
+      "Content-Disposition",
+      'attachment; filename="video' + Date.now() + '.mp4"'
+    );
+    ytdl(URL, {
+      format: "mp4",
+    }).pipe(res);
+  } else {
+    res.json({ message: "Link Mavjud Emas" });
+  }
+});
+
 const PORT = process.env.PORT || 8080
 app.listen(PORT);
