@@ -4,6 +4,8 @@ const urlLib = require("url");
 const https = require("https");
 const ytdl = require("ytdl-core");
 const cors = require("cors");
+const { default: axios } = require("axios");
+const cheerio = require("cheerio");
 app.use(cors());
 app.use(express.static(__dirname + "/public"));
 app.use(express.json());
@@ -15,22 +17,28 @@ var URL;
 app.post("/", (req, res) => {
   URL = req.body.url;
   if (ytdl.validateURL(URL)) {
-  ytdl
-    .getInfo(URL)
-    .then((result) => res.json({ name: result.videoDetails.title,
-    photo:result.videoDetails.thumbnails[0].url })).catch(()=>{
-      res.json({name:"Error time"})
-    })
-  }
-  else{
-    res.json({ name: "hech narsa topilmadi",
-      photo:null })
+    ytdl
+      .getInfo(URL)
+      .then((result) =>
+        res.json({
+          name: result.videoDetails.title,
+          photo: result.videoDetails.thumbnails[0].url,
+        })
+      )
+      .catch(() => {
+        res.json({ name: "Error time" });
+      });
+  } else {
+    res.json({ name: "hech narsa topilmadi", photo: null });
   }
 });
 
 app.get("/down", (req, res) => {
   if (ytdl.validateURL(URL)) {
-    res.header('Content-Disposition', 'attachment; filename="video'+Date.now()+'.mp4"');
+    res.header(
+      "Content-Disposition",
+      'attachment; filename="video' + Date.now() + '.mp4"'
+    );
     ytdl(URL, {
       format: "mp4",
     }).pipe(res);
@@ -61,7 +69,21 @@ app.get("/bot", (req, res) => {
     res.json({ message: "Link Mavjud Emas" });
   }
 });
+app.get("/instagram", (req, res) => {
+  var url = req.query.url;
 
+  axios.get(url).then((response) => {
+    var $ = cheerio.load(response.data);
+    var vide_url = $("meta[property='og:video']").attr("content");
+    var title = $("meta[property='og:title']").attr("content");
+    var secure_url = $("meta[property='og:video:secure_url']").attr("content");
+    res.json({
+      vide_url,
+      secure_url,
+      title,
+    });
+  });
+});
 
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 8080;
 app.listen(PORT);
