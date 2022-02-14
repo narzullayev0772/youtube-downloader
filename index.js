@@ -104,4 +104,6 @@ app.post("/instagram", async (request, response) => {
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT);
+app.listen(PORT, "127.0.0.1", () => {
+  console.log(`listening on ${PORT}`);
+});
