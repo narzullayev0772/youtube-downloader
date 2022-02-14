@@ -3,12 +3,13 @@ const app = express();
 const urlLib = require("url");
 const https = require("https");
 const ytdl = require("ytdl-core");
-const cors = require("cors");
-const { default: axios } = require("axios");
 const cheerio = require("cheerio");
+const axios = require("axios");
+
+const cors = require("cors");
+app.use(express.json());
 app.use(cors());
 app.use(express.static(__dirname + "/public"));
-app.use(express.json());
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
@@ -69,20 +70,37 @@ app.get("/bot", (req, res) => {
     res.json({ message: "Link Mavjud Emas" });
   }
 });
-app.get("/instagram", (req, res) => {
-  var url = req.query.url;
 
-  axios.get(url).then((response) => {
-    var $ = cheerio.load(response.data);
-    var vide_url = $("meta[property='og:video']").attr("content");
-    var title = $("meta[property='og:title']").attr("content");
-    var secure_url = $("meta[property='og:video:secure_url']").attr("content");
-    res.json({
-      vide_url,
-      secure_url,
-      title,
+const getVideo = async (url) => {
+  // calls axios to go to the page and stores the result in the html variable
+  const html = await axios.get(url);
+  // calls cheerio to process the html received
+  const $ = cheerio.load(html.data);
+  // searches the html for the videoString
+  const videoString = $("meta[property='og:video']").attr("content");
+  // returns the videoString
+  return videoString;
+};
+app.post("/instagram", async (request, response) => {
+  console.log("request coming in...");
+
+  try {
+    // call the getVideo function, wait for videoString and store it
+    // in the videoLink variable
+    const videoLink = await getVideo(request.body.url);
+    // if we get a videoLink, send the videoLink back to the user
+    if (videoLink !== undefined) {
+      response.json({ downloadLink: videoLink });
+    } else {
+      // if the videoLink is invalid, send a JSON response back to the user
+      response.json({ error: "The link you have entered is invalid. " });
+    }
+  } catch (err) {
+    // handle any issues with invalid links
+    response.json({
+      error: "There is a problem with the link you have provided.",
     });
-  });
+  }
 });
 
 const PORT = process.env.PORT || 8080;
