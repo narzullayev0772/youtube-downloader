@@ -1,18 +1,50 @@
-const express = require("express");
-const app = express();
 const urlLib = require("url");
 const https = require("https");
 const ytdl = require("ytdl-core");
-const cheerio = require("cheerio");
 const axios = require("axios");
+
+const cheerio = require("cheerio");
+const express = require("express");
+const request = require("request");
+
+const app = express();
 
 const cors = require("cors");
 app.use(express.json());
 app.use(cors());
 app.use(express.static(__dirname + "/public"));
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
+
+app.get("/instagram", (req, res) => {
+  const url = req.query.url;
+  request({ url: url }, (error, response, body) => {
+    if (error || response.statusCode !== 200) {
+      return res.status(500).json({ type: "error", message: error.message });
+    }
+    const $ = cheerio.load(body);
+    const title = $("meta[property='og:title']").attr("content");
+
+    const video_url = $("meta[property='og:video']").attr("content");
+    const video_secure_url = $("meta[property='og:video:secure_url']").attr(
+      "content"
+    );
+    res.json({
+      title,
+      video_url,
+      video_secure_url,
+    });
+  });
+});
+
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
+});
+app.get("/insta", (req, res) => {
+  res.sendFile(__dirname + "/public/instagram.html");
 });
 var URL;
 app.post("/", (req, res) => {
@@ -103,7 +135,5 @@ app.post("/instagram", async (request, response) => {
   }
 });
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, "127.0.0.1", () => {
-  console.log(`listening on ${PORT}`);
-});
+const PORT = process.env.PORT || 3002;
+app.listen(PORT, () => console.log(`listening on ${PORT}`));
