@@ -26,9 +26,6 @@ app.get("/instagram", (req, res) => {
       'attachment; filename="video' + Date.now() + '.mp4"'
     );
     request(url).pipe(res);
-  } else {
-    res.json({ message: "Link Mavjud Emas" });
-  }
 });
 
 app.get("/", (req, res) => {
