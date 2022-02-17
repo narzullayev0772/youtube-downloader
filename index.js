@@ -21,9 +21,9 @@ app.use((req, res, next) => {
 
 app.get("/instagram", (req, res) => {
   const url = req.query.url;
-  res.header(
+  res.setHeader(
       "Content-Disposition",
-      'attachment; filename="video' + Date.now() + '.mp4"'
+      'attachment; filename="video.mp4"'
     );
     request(url).pipe(res);
 });
