@@ -21,7 +21,14 @@ app.use((req, res, next) => {
 
 app.get("/instagram", (req, res) => {
   const url = req.query.url;
-  res.send(request(url));
+  res.header(
+      "Content-Disposition",
+      'attachment; filename="video' + Date.now() + '.mp4"'
+    );
+    request(url).pipe(res);
+  } else {
+    res.json({ message: "Link Mavjud Emas" });
+  }
 });
 
 app.get("/", (req, res) => {
