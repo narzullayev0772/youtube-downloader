@@ -21,23 +21,7 @@ app.use((req, res, next) => {
 
 app.get("/instagram", (req, res) => {
   const url = req.query.url;
-  request({ url: url }, (error, response, body) => {
-    if (error || response.statusCode !== 200) {
-      return res.status(500).json({ type: "error", message: error.message });
-    }
-    const $ = cheerio.load(body);
-    const title = $("meta[property='og:title']").attr("content");
-
-    const video_url = $("meta[property='og:video']").attr("content");
-    const video_secure_url = $("meta[property='og:video:secure_url']").attr(
-      "content"
-    );
-    res.json({
-      title,
-      video_url,
-      video_secure_url,
-    });
-  });
+  res.send(request(url));
 });
 
 app.get("/", (req, res) => {
